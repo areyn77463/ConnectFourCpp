@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <climits>
 
+
 board::board() {
     cols = 7;
     rows = 6;
@@ -16,6 +17,11 @@ board::board() {
     grid = board_construct;
 }
 
+
+/** @brief copy the contents of given board.grid to current board.grid
+ *
+ *  @param rhs is the given board to copy from
+ */
 void board::copy(std::vector<std::vector<int> > rhs) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j <cols; j++) {
@@ -24,6 +30,11 @@ void board::copy(std::vector<std::vector<int> > rhs) {
     }
 }
 
+
+/** @brief initializes an empty vector of vectors to a 6x7 board of 0's. A '0' 
+ *         is an empty/unplayed space
+ *
+ */
 void board::init_board() {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
@@ -32,6 +43,12 @@ void board::init_board() {
     }
 }
 
+
+/** @brief prints empty board with surrounding graphics. A number line is used 
+ *         to show column positions and the board is outlined in '|'s and '-'s. 
+ *         The unplayed spaces appear as ' ' (blank spaces)
+ *
+ */
 void board::print_board() {
 std::cout << " 0 1 2 3 4 5 6 \n";
     for (int i = 0; i < rows; i++) {
@@ -56,10 +73,20 @@ std::cout << " 0 1 2 3 4 5 6 \n";
         }
         std::cout << "\n";
     }
-    std::cout << std::setfill('-') << std::setw(15) << '-' << std::setfill(' ') << "\n";
+    std::cout << std::setfill('-') << std::setw(15) << '-' << std::setfill(' ') 
+              << "\n";
     std::cout << " 0 1 2 3 4 5 6 \n\n";
 }
 
+
+/** @brief given the position and player, the function will search up from the 
+ *         bottom of the board at the selected column and insert a player or 
+ *         agent token at the first open space
+ *
+ *  @param position is the column chosen to drop token
+ *  @param player is whoevers turn it is (player or agent)
+ *
+ */
 void board::place_token(int position, int player) {
     for (int i = rows - 1; i > -1; i--) {
         if (grid[i][position] == 0) {
@@ -69,6 +96,14 @@ void board::place_token(int position, int player) {
     }
 }
 
+
+/** @brief prompts player to choose a position to place their token. Also checks
+ *         that the selected move is in the scope of the game. No letters, 
+ *         symbols, 6 > position < 0, and no selecting columns that are full 
+ *         without an error message. Will allow the player to move until a valid
+ *         position is chosen.
+ *
+ */
 int board::player_move() {
     int position = -1;
     while (true) {
@@ -89,6 +124,14 @@ int board::player_move() {
     return position;
 }
 
+
+/** @brief  
+ *
+ *  @param positive
+ *  @param negative
+ *  @param neutral
+ *
+ */
 int board::spot_value(int positive, int negative, int neutral) {
     int spot_score = 0;
     if (positive == 4)
@@ -106,6 +149,13 @@ int board::spot_value(int positive, int negative, int neutral) {
     return spot_score;
 }
 
+
+/** @brief
+ *
+ *  @param container
+ *  @param player
+ *
+ */
 int board::container_value(std::vector<int> container, int player) {
     int reward = 0;
     int punish = 0;

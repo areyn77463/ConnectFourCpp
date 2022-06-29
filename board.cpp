@@ -168,3 +168,46 @@ int board::container_value(std::vector<int> container, int player) {
     punish -= reward;
     return spot_value(reward, punish, empty_spot);
 }
+
+
+bool board::game_over(int player) {
+    for (int i = rows - 1; i > -1; i--) {
+        int head = 0;
+        int tail = 0;
+        int count_four = 0;
+        while (head < cols - 3) { 
+            if((int)grid[i][tail] == player)
+                count_four++;
+            if(count_four == 4)
+                return true;
+            if (tail == (head + 3)) {
+                head++;
+                tail = head;
+                count_four = 0;
+            } else
+                tail++;
+        }
+    }
+    
+#    for (int i = rows - 1; i > rows - 3; i--) {
+#        int head = i;
+#        int tail = 0;
+#        int count_four = 0;
+#        while (tail <  - 3) {
+#            if((int)grid[head][tail] == player)
+#                count_four++;
+#            if(count_four == 4)
+#                return true;
+#            if(tail == ()) {
+#                 
+#            }else {
+#                head--;
+#                tail++;
+#            }
+#        }
+#    }
+    return false;
+}
+            
+
+

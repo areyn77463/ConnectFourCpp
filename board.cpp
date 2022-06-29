@@ -189,23 +189,26 @@ bool board::game_over(int player) {
         }
     }
     
-#    for (int i = rows - 1; i > rows - 3; i--) {
-#        int head = i;
-#        int tail = 0;
-#        int count_four = 0;
-#        while (tail <  - 3) {
-#            if((int)grid[head][tail] == player)
-#                count_four++;
-#            if(count_four == 4)
-#                return true;
-#            if(tail == ()) {
-#                 
-#            }else {
-#                head--;
-#                tail++;
-#            }
-#        }
-#    }
+    for (int i = rows - 1; i > rows - 3; i--) {
+        int head = i;
+        int tail = 0;
+        int count_four = 0;
+        std::cout << "for-head: " << head << std::endl;
+        while (tail < cols) {
+            std::cout << "head, tail: " << head << ',' << tail << " = " << grid[head][tail] << std::endl;
+            if((int)grid[head][tail] == player)
+                count_four++;
+            if(count_four == 4)
+                return true;
+            if(head == (i - 3)) {
+                head = i;
+                tail = tail - 2; 
+            }else {
+                head--;
+                tail++;
+            }
+        }
+    }
     return false;
 }
             

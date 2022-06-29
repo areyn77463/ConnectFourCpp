@@ -5,9 +5,18 @@ int menu();
 int main(int argc, char** argv) {
     board game;
     game.init_board();
-    for (int i = 0; i < 7; i++) {
-        game.place_token(i, 1);
-    }
+    
+    game.place_token(1,1);
+    game.place_token(2,2);
+    game.place_token(2,1);
+    game.place_token(3,2);
+    game.place_token(3,1);
+    game.place_token(3,1);
+    game.place_token(4,2);
+    game.place_token(4,1);
+    game.place_token(4,2);
+    game.place_token(4,1);
+
     game.print_board();
     std::cout << game.game_over(1) << std::endl;
     return 0;

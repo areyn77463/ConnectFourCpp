@@ -90,8 +90,8 @@ std::cout << " 0 1 2 3 4 5 6 \n";
 void board::place_token(int position, int player) {
     for (int i = rows - 1; i > -1; i--) {
         if (grid[i][position] == 0) {
-        grid[i][position] = player;
-        break;
+            grid[i][position] = player;
+            break;
         }
     }
 }
@@ -170,7 +170,14 @@ int board::container_value(std::vector<int> container, int player) {
 }
 
 
+/** @brief
+ *
+ *  @param player
+ *
+ */
 bool board::game_over(int player) {
+    //Check horizontal for four in row starting from bottom left
+    //and moving right and up: direction = -
     for (int i = rows - 1; i > -1; i--) {
         int head = 0;
         int tail = 0;
@@ -188,27 +195,67 @@ bool board::game_over(int player) {
                 tail++;
         }
     }
-    
+    //Check diagonal bottom left to top right starting from bottom left
+    //and moving to top right: direction = / 
     for (int i = rows - 1; i > rows - 3; i--) {
         int head = i;
         int tail = 0;
         int count_four = 0;
-        std::cout << "for-head: " << head << std::endl;
         while (tail < cols) {
-            std::cout << "head, tail: " << head << ',' << tail << " = " << grid[head][tail] << std::endl;
             if((int)grid[head][tail] == player)
                 count_four++;
             if(count_four == 4)
                 return true;
             if(head == (i - 3)) {
                 head = i;
-                tail = tail - 2; 
+                tail = tail - 2;
+                count_four = 0; 
             }else {
                 head--;
                 tail++;
             }
         }
     }
+    //Check vertical starting from bottom left and moving to top right
+    //Direction = |
+    for (int i = rows - 1; i > rows - 3; i--) {
+        int head = i;
+        int tail = 0;
+        int count_four = 0;
+        while (tail < cols) {
+            if((int)grid[head][tail] == player)
+                count_four++;
+            if(count_four == 4)
+                return true;
+            if (head == (i - 3)) {
+                head = i;
+                tail++;
+                count_four = 0;
+            } else
+                head--;
+        }
+    }
+    //Check diagonal bottom right to top left starting from middle left
+    //and moving to middle right: Direction '\' 
+    for (int i = rows - 1; i > rows - 3; i--) {
+        int head = i;
+        int tail = cols - 3;
+        int count_four = 0;
+        while (tail < cols) {
+            if((int)grid[head][tail] == player)
+                count_four++;
+            if(count_four == 4)
+                return true;
+            if(head == (i - 3)) {
+                head = i;
+                tail = tail + 4;
+                count_four = 0; 
+            }else {
+                head--;
+                tail--;
+            }
+        }
+    }    
     return false;
 }
             

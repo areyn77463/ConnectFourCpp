@@ -16,24 +16,26 @@ class board {
         int current_player;
         std::vector<std::vector<int> > grid;
 
-    public:
-       
-        board();
-        void copy(std::vector<std::vector<int> >);
-
         void init_board();
-        void print_board();
-
+        
         int spot_value(int, int, int);
         int container_value(std::vector<int>, int);
         int board_value(int);
 
         std::array<int, 2> minimax(int, int, int, int);
-        void setDepth(int x) {depth = x;};
 
         void place_token(int, int);
         int player_move();
 
         bool game_over(int);
+
+    public:       
+        board();
+        void copy(std::vector<std::vector<int> >);
+
+        void print_board();
+
+        void setDepth(int x) {depth = x;};
+
         void play_two();
 };

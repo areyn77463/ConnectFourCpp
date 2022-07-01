@@ -125,11 +125,12 @@ int board::player_move() {
 }
 
 
-/** @brief  
+/** @brief function scores a set of 4 spaces based on how many spaces
+ *          are held by the current player, opposition, and  empty spots 
  *
- *  @param positive
- *  @param negative
- *  @param neutral
+ *  @param positive the spots filled by the player
+ *  @param negative the spots filled by the opposition
+ *  @param neutral the spots that are empty
  *
  */
 int board::spot_value(int positive, int negative, int neutral) {
@@ -143,17 +144,23 @@ int board::spot_value(int positive, int negative, int neutral) {
     else if (negative == 2 && neutral == 2)
         spot_score -= 101;
     else if (negative == 3 && neutral == 1)
-        spot_score -= 1000;
+        spot_score -= 1001;
     else if (negative == 4)
         spot_score -= 10000;
     return spot_score;
 }
 
 
-/** @brief
+/** @brief function determines how many of each space is in the container
+ *          - reward for spot being the player
+ *          - punish for a spot being taken
+ *          - empty_spot if an a spot is empty
  *
- *  @param container
- *  @param player
+ *         punish -= reward corrects adding point to punish for spot held by current player 
+ *          *could be avoided with longer condition statement at punish
+ *
+ *  @param container a set of 4 places on the board
+ *  @param player the current player
  *
  */
 int board::container_value(std::vector<int> container, int player) {
@@ -167,6 +174,85 @@ int board::container_value(std::vector<int> container, int player) {
     }
     punish -= reward;
     return spot_value(reward, punish, empty_spot);
+}
+
+
+/** @brief function stores sets of four pieces in all directions in container and sends them
+ *         container_value function to be scored. the sum of all containers
+ *         is the value of the board.
+ *
+ *  @param player the current player
+ *
+ *  @return board_score the value of the current board after scoring all of the tokens on it
+ *
+ */
+int board::board_value(int player) {
+    int board_score = 0;
+    for (int i = rows - 1; i > -1; i--) {
+        std::vector<int> container;
+        int head = 0;
+        int tail = 0;
+        while (head < cols - 3) {
+           container.push_back(grid[i][tail]);
+           if (tail == (head + 3)) {
+                board_score += container_value(container, player); 
+                head++;
+                tail = head;
+                container.clear();
+           } else  
+                tail++;
+        }
+    }
+    for (int i = rows - 1; i > rows - 4; i--) {
+        std::vector<int> container;
+        int head = i;
+        int tail = 0;
+        while (tail < cols) {
+            container.push_back(grid[head][tail]);
+            if(head == (i - 3)) {
+                board_score += container_value(container, player);
+                head = i;
+                tail = tail - 2;
+                container.clear(); 
+            }else {
+                head--;
+                tail++;
+            }
+        }
+    }
+    for (int i = rows - 1; i > rows - 4; i--) {
+        std::vector<int> container;
+        int head = i;
+        int tail = 0;
+        while (tail < cols) {
+            container.push_back(grid[head][tail]);
+            if (head == (i - 3)) {
+                board_score = container_value(container, player);
+                head = i;
+                tail++;
+                container.clear();
+            } else
+                head--;
+        }
+    }
+    for (int i = rows - 1; i > rows - 4; i--) {
+        std::vector<int> container;
+        int head = i;
+        int tail = cols - 4;
+        while (tail < cols) {
+            container.push_back(grid[head][tail]);
+            if(head == (i - 3)) {
+                board_score = container_value(container, player);
+                head = i;
+                tail = tail + 4;
+                container.clear(); 
+            }else {
+                head--;
+                tail--;
+            }
+        }
+    }     
+   return board_score; 
 }
 
 
@@ -261,7 +347,11 @@ bool board::game_over(int player) {
 }
             
 
+/** @brief starts a game for 2 human players
+ *
+ */
 void board::play_two() {
+    init_board();
     print_board();
     while (!game) {
         if (current_player == agent) {

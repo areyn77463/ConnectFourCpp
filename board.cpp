@@ -198,7 +198,7 @@ bool board::game_over(int player) {
     }
     //Check diagonal bottom left to top right starting from bottom left
     //and moving to top right: direction = / 
-    for (int i = rows - 1; i > rows - 3; i--) {
+    for (int i = rows - 1; i > rows - 4; i--) {
         int head = i;
         int tail = 0;
         int count_four = 0;
@@ -219,7 +219,7 @@ bool board::game_over(int player) {
     }
     //Check vertical starting from bottom left and moving to top right
     //Direction = |
-    for (int i = rows - 1; i > rows - 3; i--) {
+    for (int i = rows - 1; i > rows - 4; i--) {
         int head = i;
         int tail = 0;
         int count_four = 0;
@@ -238,9 +238,9 @@ bool board::game_over(int player) {
     }
     //Check diagonal bottom right to top left starting from middle left
     //and moving to middle right: Direction '\' 
-    for (int i = rows - 1; i > rows - 3; i--) {
+    for (int i = rows - 1; i > rows - 4; i--) {
         int head = i;
-        int tail = cols - 3;
+        int tail = cols - 4;
         int count_four = 0;
         while (tail < cols) {
             if((int)grid[head][tail] == player)
@@ -281,5 +281,5 @@ void board::play_two() {
     if (counter == rows*cols)
         std::cout << "Draw\n";
     else
-        std::cout << ((current_player == human) ? "Player 2 wins" : "Player 1 wins\n");
+        std::cout << ((current_player == human) ? "Player 2 wins\n" : "Player 1 wins\n");
 }

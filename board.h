@@ -14,10 +14,10 @@ class board {
         bool game;
         int counter;
         int current_player;
-
-    public:
         std::vector<std::vector<int> > grid;
 
+    public:
+       
         board();
         void copy(std::vector<std::vector<int> >);
 
@@ -35,5 +35,5 @@ class board {
         int player_move();
 
         bool game_over(int);
-        void play();
+        void play_two();
 };

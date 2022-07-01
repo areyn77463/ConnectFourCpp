@@ -170,10 +170,11 @@ int board::container_value(std::vector<int> container, int player) {
 }
 
 
-/** @brief
+/** @brief checks in all directions to find 4 of the same tokens in a row
  *
- *  @param player
+ *  @param player is whoevers turn it is (player or agent)
  *
+ *  @return true if 4 of same tokens found in a row
  */
 bool board::game_over(int player) {
     //Check horizontal for four in row starting from bottom left
@@ -260,4 +261,25 @@ bool board::game_over(int player) {
 }
             
 
-
+void board::play_two() {
+    print_board();
+    while (!game) {
+        if (current_player == agent) {
+            std::cout << "\nPlayer 2\n";
+            place_token(player_move(), agent);
+        } else if (current_player == human) {
+            std::cout << "\nPlayer 1\n";
+            place_token(player_move(), human);
+        } else if (counter == rows*cols)
+            game = true;
+        game = game_over(current_player);
+        current_player = (current_player == 1) ? 2 : 1;
+        counter++;
+        std::cout << "\n";
+        print_board();
+    }
+    if (counter == rows*cols)
+        std::cout << "Draw\n";
+    else
+        std::cout << ((current_player == human) ? "Player 2 wins" : "Player 1 wins\n");
+}

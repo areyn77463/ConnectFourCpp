@@ -3,6 +3,6 @@
 
 int main(int argc, char** argv) {
     board game;
-    game.play_two();
+    game.play_one();
 
 }

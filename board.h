@@ -38,4 +38,5 @@ class board {
         void setDepth(int x) {depth = x;};
 
         void play_two();
+        void play_one();
 };

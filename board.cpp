@@ -1,5 +1,6 @@
 #include "board.h"
 
+#include <algorithm>
 #include <iomanip>
 #include <climits>
 
@@ -186,7 +187,63 @@ int board::container_value(std::vector<int> container, int player) {
  *  @return board_score the value of the current board after scoring all of the tokens on it
  *
  */
-int board::board_value(int player) {
+int board::board_value(int player){
+    int score = 0;
+    std::vector<int> vCol(cols);
+    std::vector<int> vRow(rows);
+    std::vector<int> set(4);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {    //assign each value x axis on list
+            vCol[j] = grid[i][j];
+        }
+        for (int j = 0; j < cols - 3; j++) {    
+            for (int k = 0; k < 4; k++) {   //cut into sets of 4
+                set[k] = vCol[j + k];
+            }
+            score += container_value(set, player);    //check the score of the set of 4 spaces
+        }
+    }
+    //assign, cut, and check vertical sets of 4
+    for (int i = 0; i < cols; i++) {
+        for (int j = 0; j < rows; j++) {
+            vRow[j] = grid[j][i];
+        }
+        for (int j = 0; j < rows - 3; j++) {
+            for (int k = 0; k < 4; k++) {
+                set[k] = vRow[j + k];
+            }
+            score += container_value(set, player);
+        }
+    }
+    //assign cut, and check diagonal sets of 4
+    for (int i = 0; i < rows - 3; i++) {
+        for (int j = 0; j < cols; j++) {
+            vCol[j] = grid[i][j];
+        }
+        for (int j = 0; j < cols - 3; j++) {
+            for (int k = 0; k < 4; k++) {
+                set[k] = grid[i + k][j + k];
+            }
+            score += container_value(set, player);
+        }
+    }
+    for (int i = 0; i < rows - 3; i++) {
+        for (int j = 0; j < cols; j++) {
+            vCol[j] = grid[i][j];
+        }
+        for (int j = 0; j < cols - 3; j++) {
+            for (int k = 0; k < 4; k++) {
+                set[k] = grid[i + 3 - k][j + k];
+            }
+            score += container_value(set, player);
+        }
+    }
+    return score;
+}
+
+
+//attempted using game_over logic instead of nested for loops
+/*int board::board_value(int player) {
     int board_score = 0;
     for (int i = rows - 1; i > -1; i--) {
         std::vector<int> container;
@@ -253,7 +310,7 @@ int board::board_value(int player) {
         }
     }     
    return board_score; 
-}
+}*/
 
 
 /** @brief checks in all directions to find 4 of the same tokens in a row
@@ -347,6 +404,56 @@ bool board::game_over(int player) {
 }
             
 
+/** @brief
+ *
+ * @param depth
+ * @param player
+ *
+ */
+std::array<int, 2> board::minimax(int depth,int alpha, int beta, int player) {
+    if (depth == 0 || depth >= (rows*cols) - counter)
+        return std::array<int, 2>{board_value(agent), -1}; 
+    if (player == agent) {
+        std::array<int, 2> score_move = {INT_MIN, -1};
+        if (game_over(human))
+            return score_move; 
+        for (int i = 0; i < cols; i++) {
+            if (grid[0][i] == 0) {
+                board temp;
+                temp.copy(grid);
+                temp.place_token(i, player);
+                int score = temp.minimax(depth - 1, alpha, beta, human)[0];
+                if (score > score_move[0])
+                    score_move = {score, i};
+           /* alpha = std::max(alpha, score_move[0]);
+            if (alpha >= beta)
+                break;*/
+            }
+        }
+        return score_move;
+    } else {
+        std::array<int, 2> score_move = {INT_MAX, -1};
+        if (game_over(agent))
+            return score_move; 
+        for (int i = 0; i < cols; i++) {
+            if (grid[0][i] == 0) {
+                board temp;
+                temp.copy(grid);
+                temp.place_token(i, player);
+                int score = temp.minimax(depth - 1, alpha, beta, agent)[0];
+                if (score < score_move[0])
+                    score_move = {score, i};
+           /* beta = std::min(beta, score_move[0]);
+            if (alpha >= beta)
+                break;*/
+            }
+        }
+        return score_move;
+    }
+}
+
+
+
 /** @brief starts a game for 2 human players
  *
  */
@@ -372,4 +479,31 @@ void board::play_two() {
         std::cout << "Draw\n";
     else
         std::cout << ((current_player == human) ? "Player 2 wins\n" : "Player 1 wins\n");
+}
+
+
+/** @brief starts a game for 2 human players
+ *
+ */
+void board::play_one() {
+    init_board();
+    print_board();
+    while (!game) {
+        if (current_player == agent) {
+            place_token(minimax(depth, INT_MIN, INT_MAX, agent)[1], agent);
+        } else if (current_player == human) {
+            std::cout << "\nPlayer 1\n";
+            place_token(player_move(), human);
+        } else if (counter == rows*cols)
+            game = true;
+        game = game_over(current_player);
+        current_player = (current_player == 1) ? 2 : 1;
+        counter++;
+        std::cout << "\n";
+        print_board();
+    }
+    if (counter == rows*cols)
+        std::cout << "Draw\n";
+    else
+        std::cout << ((current_player == human) ? "Computer wins\n" : "Player 1 wins\n");
 }

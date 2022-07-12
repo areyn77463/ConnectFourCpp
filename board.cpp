@@ -4,7 +4,6 @@
 #include <iomanip>
 #include <climits>
 
-
 board::board() {
     cols = 7;
     rows = 6;
@@ -108,9 +107,12 @@ void board::place_token(int position, int player) {
 int board::player_move() {
     int position = -1;
     while (true) {
+        std::cout << "Quit any time with \"81\"\n";
         std::cout << "Player choose position: ";
         std::cin >> position;
-        if (!std::cin) {
+        if (position == 81)
+            exit(0);
+        else if (!std::cin) {
             std::cin.clear();
             std::cin.ignore(INT_MAX, '\n');
             std::cout << "That is not a column number!";
@@ -425,9 +427,9 @@ std::array<int, 2> board::minimax(int depth,int alpha, int beta, int player) {
                 int score = temp.minimax(depth - 1, alpha, beta, human)[0];
                 if (score > score_move[0])
                     score_move = {score, i};
-           /* alpha = std::max(alpha, score_move[0]);
+            alpha = std::max(alpha, score_move[0]);
             if (alpha >= beta)
-                break;*/
+                break;
             }
         }
         return score_move;
@@ -443,9 +445,9 @@ std::array<int, 2> board::minimax(int depth,int alpha, int beta, int player) {
                 int score = temp.minimax(depth - 1, alpha, beta, agent)[0];
                 if (score < score_move[0])
                     score_move = {score, i};
-           /* beta = std::min(beta, score_move[0]);
+            beta = std::min(beta, score_move[0]);
             if (alpha >= beta)
-                break;*/
+                break;
             }
         }
         return score_move;
@@ -503,7 +505,7 @@ void board::play_one() {
         print_board();
     }
     if (counter == rows*cols)
-        std::cout << "Draw\n";
+        std::cout << "Draw\n\n";
     else
-        std::cout << ((current_player == human) ? "Computer wins\n" : "Player 1 wins\n");
+        std::cout << ((current_player == human) ? "Computer wins\n\n" : "Player 1 wins\n\n");
 }

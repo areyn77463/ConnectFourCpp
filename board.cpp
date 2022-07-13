@@ -406,10 +406,15 @@ bool board::game_over(int player) {
 }
             
 
-/** @brief
+/** @brief recursive function checks and scores each possible move for player
+ *         and agent choosing the best move for each. Minimax will choose the
+ *         position that maximizes the score while running as human and 
+ *         minimizes the score while running for agent. Alpha-Beta pruning 
+ *         will allow the function to avoid checking certain moves if a better 
+ *         one is already available. This is not guaranteed to happen.   
  *
- * @param depth
- * @param player
+ * @param depth how many moves forward to check
+ * @param player current player
  *
  */
 std::array<int, 2> board::minimax(int depth,int alpha, int beta, int player) {
@@ -484,7 +489,7 @@ void board::play_two() {
 }
 
 
-/** @brief starts a game for 2 human players
+/** @brief starts a game for 1 human player and uses minimax to choose computer positions
  *
  */
 void board::play_one() {
